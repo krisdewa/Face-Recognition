@@ -10,17 +10,20 @@ Before running the program, make sure you have installed the following libraries
 
 - OpenCV: `pip install opencv-python`
 - TensorFlow: `pip install tensorflow`
+- Flask: `pip install flask`
 
 ## Usage
 
 1. Open a terminal or command prompt.
-2. Navigate to the directory where the Python file (`face_recognition.py`) is located.
+2. Navigate to the directory where the Python file (`facial_emotion_recognition.py`) is located.
 3. Run the program with the command:
 
    ```bash
-   python face_recognition.py
+   python facial_emotion_recognition.py
 
-Wait for the program to open the webcam video and display the facial expression detection output.
+Open your web browser and navigate to http://127.0.0.1:5000/. You should see the webcam feed with Real-Time face detection and expression recognition.
+
+
 
 ## Directory Structure
 - haarcascades: Directory containing cascade files for face detection.

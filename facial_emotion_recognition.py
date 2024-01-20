@@ -1,6 +1,9 @@
+from flask import Flask, render_template, Response
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
+
+app = Flask(__name__)
 
 # Load pre-trained face detection model
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -11,7 +14,6 @@ model = load_model('models/expression_model.h5')
 # Define class labels for expressions
 class_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
-# Function to detect face and recognize expression
 def detect_and_recognize_expression(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30))
@@ -33,21 +35,29 @@ def detect_and_recognize_expression(frame):
 
     return frame
 
-# Open webcam
-cap = cv2.VideoCapture(0)
+def generate_frames():
+    cap = cv2.VideoCapture(0)
 
-while True:
-    ret, frame = cap.read()
+    while True:
+        success, frame = cap.read()
+        if not success:
+            break
 
-    if not ret:
-        break
+        frame = detect_and_recognize_expression(frame)
 
-    frame = detect_and_recognize_expression(frame)
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
 
-    cv2.imshow('Face Expression Recognition', frame)
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-cap.release()
-cv2.destroyAllWindows()
+@app.route('/video_feed')
+def video_feed():
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+if __name__ == '__main__':
+    app.run(debug=True)
