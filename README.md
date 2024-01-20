@@ -12,6 +12,12 @@ Before running the program, make sure you have installed the following libraries
 - TensorFlow: `pip install tensorflow`
 - Flask: `pip install flask`
 
+Or
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
 ## Usage
 
 1. Open a terminal or command prompt.

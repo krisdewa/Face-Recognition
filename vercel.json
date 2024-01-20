@@ -1,0 +1,11 @@
+{
+    "version": 2,
+    "builds": [{
+        "src": "facial_emotion_recognition.py",
+        "use": "@vercel/python"
+    }],
+    "routes": [{
+        "src": "/(.*)",
+        "dest": "/facial_emotion_recognition.py"
+    }]
+}
